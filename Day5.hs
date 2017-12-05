@@ -11,11 +11,11 @@ jump1 jumps pos = (newPos, M.alter (liftM (+1)) pos jumps)
     newPos = pos + (maybe (error "ran out") id $ M.lookup pos jumps)
 
 jump2 :: Jumps -> Int -> (Int, Jumps)
-jump2 jumps pos = (newPos, M.alter (liftM alteration) pos jumps)
+jump2 jumps pos = (newPos, M.insert pos alteredOffset jumps)
   where
     offset = maybe (error "ran out") id $ M.lookup pos jumps
     newPos = pos + offset
-    alteration = if offset >= 3 then (flip (-) 1) else ((+) 1)
+    alteredOffset = if offset >= 3 then (offset - 1) else (offset + 1)
 
 positions jumpFunc initJumps = map fst positionss
   where
