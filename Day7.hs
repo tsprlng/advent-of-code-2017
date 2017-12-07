@@ -19,29 +19,9 @@ type Collector = M.Map Name Prog
 lineParser :: GenParser Char st Program
 lineParser =
   do name <- many (noneOf " ")
-     string " ("
-     weight <- weightStr
-     string ")"
-     children <- maybeChildren <|> (return [])
-     return (name, weight, children)
-
-weightStr :: GenParser Char st Weight
-weightStr =
-  do w <- many digit
-     return $ read w
-
-maybeChildren :: GenParser Char st [Name]
-maybeChildren =
-  do string " -> "
-     first <- many (noneOf ",")
-     rest <- many moreChild
-     return (first:rest)
-
-moreChild :: GenParser Char st Name
-moreChild =
-  do string ", "
-     name <- many (noneOf ",")
-     return name
+     weight <- string " (" >> many digit >>= \w -> string ")" >> return w
+     children <- (string " -> " >> sepBy (many $ noneOf ",") (string ", ")) <|> (return [])
+     return (name, read weight, children)
 
 parseLine :: String -> Either ParseError Program
 parseLine = parse lineParser ""
