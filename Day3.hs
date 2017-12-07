@@ -8,7 +8,7 @@ moves = concatMap moves' [0..]
   where
     moves' n = replicate (2*n) (-1,0) ++ replicate (2*n) (0,-1) ++ replicate (2*n + 1) (1,0) ++ replicate (2*n + 1) (0,1)
 
-positions = (0,0) : zipWith (addV) positions moves :: [(Integer,Integer)]
+positions = scanl addV (0,0) moves
 
 distance n = distance' $ positions !! (n-1)
   where
@@ -26,7 +26,7 @@ update m pos = (result, M.insert pos result m)
 updates = map fst updates'
   where
     updates' :: [(Integer, Memory)]
-    updates' = (1, (M.insert (0,0) 1 M.empty)) : zipWith inserrt updates' (tail positions)
+    updates' = scanl inserrt (1, M.insert (0,0) 1 M.empty) $ tail positions
     inserrt :: (Integer, Memory) -> (Integer, Integer) -> (Integer, Memory)
     inserrt lastInsert pos = update (snd lastInsert) pos
 
