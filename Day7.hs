@@ -6,7 +6,6 @@ import Data.Either (either)
 import Data.Maybe (isNothing, isJust, fromJust, fromMaybe)
 import Data.List (find, group, sort, groupBy, sortOn)
 import Control.Exception (throw)
-import Control.Monad (liftM)
 
 
 type Name = String
@@ -69,7 +68,7 @@ answerTheQuestion input =
 
 
 main = do
-  input <- liftM (absorbErrors . map parseLine . lines) $ readFile "Day7.txt" :: IO [Program]
+  input <- (absorbErrors . map parseLine . lines) <$> readFile "Day7.txt" :: IO [Program]
   --mapM_ (putStrLn . show) $ input
   let tree = toTree input
   putStrLn . (\(name,_,_,_)->name) . fst $ tree

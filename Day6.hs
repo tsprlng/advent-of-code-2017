@@ -1,7 +1,6 @@
 module Main where
 import Data.List (elemIndex)
 import Data.Maybe (fromJust)
-import Control.Monad (liftM)
 
 rotate n xs = end ++ start
   where
@@ -32,6 +31,6 @@ answer2 input = ans [] input  -- how long is loop?
         next = ans (currentDist:pastDists) (redist currentDist)
 
 main = do
-  input <- liftM (map read . concatMap words . lines) $ readFile "Day6.txt" :: IO [Int]
+  input <- (map read . concatMap words . lines) <$> readFile "Day6.txt" :: IO [Int]
   putStrLn . show $ answer1 input
   putStrLn . show $ answer2 input

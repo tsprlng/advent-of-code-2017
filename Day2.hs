@@ -1,6 +1,5 @@
 module Day2 where
 import Data.List (permutations, tails)
-import Control.Monad (liftM)
 
 checksum1 :: [[String]] -> Int
 checksum1 lines = sum $ map linesum lines
@@ -19,6 +18,6 @@ checksum2 lines = sum $ map linesum lines
         possibles = [ (x,y) | (x:rest) <- tails (vals' ++ reverse vals') , y <- rest ]
 
 main = do
-  input <- liftM (map words . lines) $ readFile "Day2.txt"
+  input <- map words . lines <$> readFile "Day2.txt"
   putStrLn . show $ checksum1 input
   putStrLn . show $ checksum2 input

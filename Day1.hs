@@ -1,6 +1,5 @@
 module Day1 where
 import Data.Char (digitToInt, isDigit)
-import Control.Monad (liftM)
 
 valueIfMatching :: Char -> Char -> Int
 valueIfMatching a b =
@@ -15,6 +14,6 @@ count2 input =
     (start, end) = splitAt (length input `div` 2) input
 
 main = do
-  input <- liftM (filter isDigit) $ readFile "Day1.txt"
+  input <- filter isDigit <$> readFile "Day1.txt"
   putStrLn . show $ count1 input
   putStrLn . show $ count2 input
