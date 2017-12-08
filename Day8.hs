@@ -2,10 +2,10 @@ module Day8 where
 
 import Text.ParserCombinators.Parsec
 import qualified Data.Map as M
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, fromJust)
 import Control.Exception (throw)
 
--- toChange, delta, toCompare, comparator
+-- regToChange, delta, regToCompare, predicate
 type Instruction = (Name, Integer, Name, Integer->Bool)
 type Name = String
 type Operator = String
@@ -14,25 +14,20 @@ type Regs = M.Map Name Integer
 
 xor a = if a then not else id
 
-toFn "<" = flip (<)
-toFn ">" = flip (>)
-toFn "<=" = flip (<=)
-toFn ">=" = flip (>=)
-toFn "==" = flip (==)
-toFn "!=" = flip (/=)
-toFn x = error $ "what is " ++ x
+functions = [("<=", (<=)), (">=", (>=)), ("<", (<)), (">", (>)), ("==", (==)), ("!=", (/=))]
+toFn symbol = flip . fromJust $ M.lookup symbol $ M.fromList functions
 
 lineParser :: GenParser Char st Instruction
 lineParser =
   do toChange <- many (noneOf " ")
      direction <- string " " >> (string "inc" <|> string "dec")
      sign <- string " " >> (option '+' $ oneOf "+-")
-     amount <- many digit  -- TODO at least one
+     amount <- many1 digit
      string " if "
-     toCompare <- many (noneOf " ")
-     operator <- string " " >> many (oneOf "<>=!")  -- TODO is there some sort of map (try string) over <|> ?
+     toCompare <- many1 (noneOf " ")
+     operator <- string " " >> choice (map (try . string . fst) functions)
      compSign <- string " " >> (option '+' $ oneOf "+-")
-     compAmount <- many digit
+     compAmount <- many1 digit
      let signedAmt = if xor (sign=='-') (direction=="dec") then ((-1)*) else id
      let signedComp = if compSign=='-' then ((-1)*) else id
      return (toChange, signedAmt $ read amount, toCompare, toFn operator $ signedComp $ read compAmount)
@@ -46,7 +41,7 @@ absorbErrors = map (either (error.show) id)
 
 doInstruction :: Regs -> Instruction -> Regs
 doInstruction regs (toChange, delta, compareWith, comparator)
-  | comparator compared = M.alter (Just.(+delta).fromMaybe 0) toChange regs
+  | comparator compared = M.alter (Just . (+delta) . fromMaybe 0) toChange regs
   | otherwise = regs
   where
     compared = M.findWithDefault 0 compareWith regs
@@ -63,6 +58,5 @@ highestEver instrs = maximum $ allValueSets
 
 main = do
   input <- (absorbErrors . map parseLine . lines) <$> readFile "Day8.txt" :: IO [Instruction]
-  --mapM_ (putStrLn . show) $ input
   putStrLn . show $ maximum $ map snd $ M.toList $ doInstructions input
   putStrLn . show $ highestEver input
