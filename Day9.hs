@@ -10,16 +10,12 @@ stuffParser = garbage <|> group
   where
     group =
       do
-        string "{"
-        things <- sepBy stuffParser (string ",")
-        string "}"
+        things <- between (string "{") (string "}") $ sepBy stuffParser (string ",")
         return $ Group things
     garbage =
       do
-        string "<"
-        content <- many (ignore <|> ((:[]) <$> noneOf ">"))
+        content <- between (string "<") (string ">") $ many (ignore <|> ((:[]) <$> noneOf ">"))
           -- TODO could filter Maybes or something instead (but [] seems more or less equivalent?)
-        string ">"
         return $ Garbage $ concat content
 
     ignore = char '!' >> anyChar >> return ""
