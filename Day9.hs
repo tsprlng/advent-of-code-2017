@@ -8,10 +8,7 @@ data Stuff = Group [Stuff] | Garbage String
 stuffParser :: GenParser Char st Stuff
 stuffParser = garbage <|> group
   where
-    group =
-      do
-        things <- between (string "{") (string "}") $ sepBy stuffParser (string ",")
-        return $ Group things
+    group = (between (string "{") (string "}") $ sepBy stuffParser (string ",")) >>= return.Group
     garbage =
       do
         content <- between (string "<") (string ">") $ many (ignore <|> (count 1 $ noneOf ">"))
