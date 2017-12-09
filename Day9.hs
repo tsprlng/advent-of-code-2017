@@ -14,7 +14,7 @@ stuffParser = garbage <|> group
         return $ Group things
     garbage =
       do
-        content <- between (string "<") (string ">") $ many (ignore <|> ((:[]) <$> noneOf ">"))
+        content <- between (string "<") (string ">") $ many (ignore <|> (count 1 $ noneOf ">"))
           -- TODO could filter Maybes or something instead (but [] seems more or less equivalent?)
         return $ Garbage $ concat content
 
