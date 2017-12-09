@@ -14,7 +14,7 @@ stuffParser = garbage <|> group
 
     garbage = between (string "<") (string ">") $ many (ignore <|> (count 1 $ noneOf ">")) >>=
       return . Garbage . concat
-          -- TODO could filter Maybes or something instead (but [] seems more or less equivalent?)
+          -- TODO could filter Maybes or something instead (but concat/[] seems more or less as good?)
       where
         ignore = char '!' >> anyChar >> return ""
 
