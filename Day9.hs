@@ -8,14 +8,15 @@ data Stuff = Group [Stuff] | Garbage String
 stuffParser :: GenParser Char st Stuff
 stuffParser = garbage <|> group
   where
-    group = (between (string "{") (string "}") $ sepBy stuffParser (string ",")) >>= return.Group
-    garbage =
-      do
-        content <- between (string "<") (string ">") $ many (ignore <|> (count 1 $ noneOf ">"))
-          -- TODO could filter Maybes or something instead (but [] seems more or less equivalent?)
-        return $ Garbage $ concat content
+    group = (between (string "{") (string "}") $ sepBy stuffParser (string ",")) >>=
+      return . Group
+          -- TODO surely there's a right-associative way to do this?
 
-    ignore = char '!' >> anyChar >> return ""
+    garbage = between (string "<") (string ">") $ many (ignore <|> (count 1 $ noneOf ">")) >>=
+      return . Garbage . concat
+          -- TODO could filter Maybes or something instead (but [] seems more or less equivalent?)
+      where
+        ignore = char '!' >> anyChar >> return ""
 
 parseStuff = either (error.show) id <$> parse stuffParser ""
 
