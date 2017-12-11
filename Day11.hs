@@ -51,7 +51,7 @@ move (nw, n, ne, se, s, sw) "ne"
 doMoves = foldl move (0,0,0,0,0,0)
 eachPosition = scanl move (0,0,0,0,0,0)
 
-howFar = \(a,b,c,d,e,f)->a+b+c+d+e+f
+howFar (a,b,c,d,e,f) = a + b + c + d + e + f
 
 main = do
   input <- splitCommas . filter (not.isSpace) <$> readFile "Day11.txt"
