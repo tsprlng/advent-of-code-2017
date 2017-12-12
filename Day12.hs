@@ -19,7 +19,9 @@ listProgs mapp seen prog
   | elem prog seen = []
   | otherwise = prog : concatMap (listProgs mapp (prog:seen)) (fromJust $ M.lookup prog mapp)
 
-findGroup input prog = nub . sort $ listProgs input [] prog
+findGroup input prog = {-nub . sort $-} listProgs input [] prog
+
+-- TODO why isn't unique filter necessary (and/or why don't I trust it?)
 
 findGroups input = findGroups' input [] (map fst $ M.toList input)
   where
