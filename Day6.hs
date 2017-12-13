@@ -1,4 +1,4 @@
-module Main where
+module Day6 where
 import Data.List (elemIndex)
 import Data.Maybe (fromJust)
 
