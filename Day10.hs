@@ -35,7 +35,9 @@ doKnots listLen pos skip xs (len:lens)
 
 denseHash xs = map (foldl1 xor) $ chunksOf 16 xs
 
-present ints = concatMap (flip showHex "") ints
+present ints = concatMap (align . flip showHex "") ints
+  where
+    align b = (replicate (2-(length b)) '0') ++ b
 
 knotHash str = present $ denseHash $ doKnots (length initialList) 0 0 initialList mangledStr
   where
