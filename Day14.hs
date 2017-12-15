@@ -33,9 +33,9 @@ regionize grid = foldl (\g (x,y) -> tryCombine g x y) labeled [(x,y) | x <- [0..
     neighbours :: [[Maybe Int]] -> Int -> Int -> [Int]
     neighbours grid x y = map fromJust $ filter isJust $ map (\(x,y) -> (grid !! y) !! x) nn
       where
-        nn = (if x>0 then [(x-1,y)] else []) ++ (if x<(width-1) then [(x+1,y)] else [])
-             ++ (if y>0 then [(x,y-1)] else []) ++ (if y<(height-1) then [(x,y+1)] else [])
+        nn = (if x>0 then [(x-1,y)] else []) ++ (if y>0 then [(x,y-1)] else [])
 
+    -- TODO this is appallingly inefficient
     update :: [[Maybe Int]] -> [Int] -> Int -> [[Maybe Int]]
     update grid [] regroup = grid
     update grid needles regroup = map (map replaceIfMatch) grid
