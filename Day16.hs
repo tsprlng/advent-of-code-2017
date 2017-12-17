@@ -50,6 +50,6 @@ main = do
     input <- parseStuff <$> readFile "Day16.txt"
     let oneDance = foldl doMove ['a'..'p'] input
     putStrLn oneDance
-    let reordering = array ('a','p') $ zip ['a'..'p'] oneDance
-    let initial = array ('a','p') $ zip ['a'..'p'] ['a'..'p'] :: UArray Char Char
-    putStrLn . elems $ foldl' (\pos meh -> danceAgain reordering pos) initial (replicate 1000000000 "meh")
+    let cycleLength = (+1) . fromJust $ elemIndex ['a'..'p'] $ tail $ iterate' (\poss -> foldl doMove poss input) ['a'..'p']
+    putStrLn $ head $ drop (mod 1000000000 cycleLength) $ iterate' (\poss -> foldl doMove poss input) ['a'..'p']
+
