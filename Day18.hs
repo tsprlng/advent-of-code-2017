@@ -115,5 +115,5 @@ main = do
   instrsList <- map parseInstr . lines <$> readFile "Day18.txt"
   let instrs = array (0, length instrsList - 1) $ zip [0..] instrsList
 
-  putStrLn . show $ fromJust . head . dropWhile isNothing $ map (\(_,_,_,maybeFreq)-> maybeFreq) $ steps1 instrs
+  putStrLn . show $ fromJust . head . dropWhile isNothing $ (\(_,_,_,maybeFreq)-> maybeFreq) <$> steps1 instrs
   putStrLn . show $ length $ snd $ duetMessages instrs
