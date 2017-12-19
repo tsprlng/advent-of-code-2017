@@ -22,21 +22,24 @@ followPath :: Field -> (Position, Direction) -> [(Position, Char, Direction)]
 followPath f (pos@(x,y), dir@(dx,dy))
   = map fromJust $ takeWhile isJust $ iterate (nextChar f . fromJust) $ Just (pos, f ! pos, dir)
 
+-- TODO go back to whatever I did in the past that was cleaner than iterate and Maybe
+
 nextChar :: Field -> (Position, Char, Direction) -> Maybe (Position, Char, Direction)
-nextChar f (pos@(x,y), _, dir@(dx,dy))
-  | charHere == '+' = Just $ if validCharForDir char1 turn1 then (pos1, char1, turn1) else (pos2, char2, turn2)
-  | charAhead == ' ' = Nothing
-  | otherwise = Just ((x+dx, y+dy), charAhead, dir)
+nextChar f (here@(x,y), _, dir@(dx,dy))
+  | f ! here == '+'
+      = Just $ if wayIsClear char1 way1 then (pos1, char1, way1) else (pos2, char2, way2)
+          -- Mercifully there aren't any letters on corners -- always '+', so this is good enough.
+  | f ! ahead == ' ' = Nothing
+          -- The end of the path since it wasn't a corner.
+  | otherwise = Just (ahead, f ! ahead, dir)
   where
-    validCharForDir ' '  _    = False
-    validCharForDir '|' (_,0) = False
-    validCharForDir '-' (0,_) = False
-    validCharForDir  _   _    = True
-    charHere = f ! pos
-    charAhead = f ! (x+dx, y+dy)
-    (turn1, turn2) = ((dy, dx), (0-dy, 0-dx))
-    (pos1, pos2) = ((x+dy, y+dx), (x-dy, y-dx))
-    (char1, char2) = (f ! pos1, f ! pos2)
+    wayIsClear ' '  _    = False
+    wayIsClear '|' (_,0) = False
+    wayIsClear '-' (0,_) = False
+    wayIsClear  _   _    = True
+    ahead = (x+dx, y+dy)
+    (way1, pos1, char1) = (( dy,  dx), (x+dy, y+dx), f ! pos1)
+    (way2, pos2, char2) = ((-dy, -dx), (x-dy, y-dx), f ! pos2)
 
 linesTo2d :: [String] -> Field
 linesTo2d lines = array ((0,0),(length (head lines) - 1, length lines - 1)) $ concatMap indexChars indexedLines
