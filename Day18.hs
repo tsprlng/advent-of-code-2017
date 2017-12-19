@@ -104,7 +104,7 @@ steps2 instrs rcvQueue pid = map fromJust $ takeWhile isJust $ iterate (doInstr2
   where
     initReg = M.insert 'p' pid M.empty
 
-duetMessages instrs = (queue0, queue1)  -- TODO I bet this doesn't handle deadlock properly!
+duetMessages instrs = (queue0, queue1)
   where
     s0 = steps2 instrs queue1 0
     s1 = steps2 instrs queue0 1
