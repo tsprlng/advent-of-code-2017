@@ -1,0 +1,29 @@
+b = c = 65
+
+if a != 0
+	b = 106500
+	c = 123500
+
+while true
+	f = 1
+	d = 2
+	
+	do
+		e = 2
+		do
+			if d*e == b
+				f = 0
+	
+			e += 1
+		until e == b
+	
+		d += 1
+	until d == b
+	
+	if f != 0
+		h += 1
+	
+	if b == c
+		break
+	
+	b += 17

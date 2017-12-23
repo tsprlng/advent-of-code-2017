@@ -16,3 +16,5 @@ Observations
 *Day 9:* I seem to be consciously limiting myself to the base libraries... apart from Parsec, which again seems too good to ignore, particularly as regexes are old boring news to me nowadays.
 
 *Day 14:* As my overall enthusiasm slumps, the code quality is noticeably decreasing (or so it seems). Nonetheless I'm still learning something each day from this exercise. Will I keep up?
+
+*Day 23:* I finally cheated as today's question broke my scheme anyway.

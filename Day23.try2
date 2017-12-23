@@ -1,0 +1,14 @@
+matches = 0  // our h -- count of nonprimes!
+
+for b in 106500 to 123500 by 17
+	
+	match = false  // f = 1
+
+	for d in 2 to b  // could be ceil.sqrt
+		for e in 2 to b  // could be d, or just test (b % d) and avoid the loop
+
+			if d*e == b
+				match = true
+	
+	if match
+		matches++
