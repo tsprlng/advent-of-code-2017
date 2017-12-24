@@ -8,6 +8,8 @@ import Data.Array.Unboxed (UArray)
 import Data.Array.IO (IOUArray)
 import Data.Array.MArray (writeArray, readArray, newListArray, freeze)
 
+import System.IO.Unsafe (unsafeInterleaveIO)
+
 type Vec2 = (Int, Int)  -- (0,1) is up; (1,0) is right
 type Position = Vec2
 type Direction = Vec2
@@ -85,12 +87,13 @@ type Map2 = IOUArray Position VirusState
 upgrade :: Bool -> VirusState
 upgrade b = if b then 2 else 0
 
-iterateM :: Int -> (a -> IO a) -> a -> IO [a]
-iterateM 0 _ _ = return []
-iterateM n f bla = do
+iterateM :: (a -> IO a) -> a -> IO [a]
+iterateM f bla = do
   first <- f bla
-  rest <- iterateM (n-1) f first
+  rest <- unsafeInterleaveIO $ iterateM f first  -- lazy like normal iterate (TODO is there nicer way?)
   return (first:rest)
+
+-- TODO experiment with wrapping unsafePerformIOness back into pure fn that hides the MArray completely?
 
 main = do
   input <- readMap <$> readFile "Day22.txt"
@@ -117,7 +120,7 @@ main = do
 
   --let demo = take 5 $ tail $ iterate (steppy2.snd) (0, (initPosn demoInput, initDirn, demoexpanded2, demoexpanded2))
   --mapM_ (putStrLn . showMap2 . (\(_,_,map,_)->map) . snd) $ demo
-  steps <- iterateM 10000000 ((steppy2 expanded2).snd) (0, (initPosn input, initDirn))
-  putStrLn . show $ length $ filter ((==statInfected).fst) steps
+  steps <- iterateM ((steppy2 expanded2).snd) (0, (initPosn input, initDirn))
+  putStrLn . show $ length $ filter ((==statInfected).fst) $ take 10000000 steps
 
   --putStrLn . show $ length $ filter ((==statInfected).fst) $ take 100000 $ tail $ steps
