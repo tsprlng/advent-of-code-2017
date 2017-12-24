@@ -44,7 +44,7 @@ regionize grid = foldl (\g (x,y) -> tryCombine g x y) labeled [(x,y) | x <- [0..
         replaceIfMatch (Just x) = if elem x needles then (Just regroup) else (Just x)
 
     tryCombine :: [[Maybe Int]] -> Int -> Int -> [[Maybe Int]]
-    tryCombine grid x y = maybe grid (\v -> update grid (neighbours grid x y) v) ((grid !!y) !!x)
+    tryCombine grid x y = maybe grid (\v -> update grid (neighbours grid x y) v) (grid !!y !!x)
 
 main = do
   putStrLn . show $ sum $ map (length . filter (=='1')) $ gridFor "xlqgujun"
