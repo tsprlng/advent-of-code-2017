@@ -18,3 +18,5 @@ Observations
 *Day 14:* As my overall enthusiasm slumps, the code quality is noticeably decreasing (or so it seems). Nonetheless I'm still learning something each day from this exercise. Will I keep up?
 
 *Day 23:* I finally cheated as today's question broke my scheme anyway.
+
+*Day 25:* That was fun. I still think there is a large class of problems for which I won't use Haskell.
